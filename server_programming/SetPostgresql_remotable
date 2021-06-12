@@ -1,0 +1,15 @@
+# PostgreSQL 외부 접속 허용하기
+
+# in terminal
+psql -U postgres -c 'SHOW config_file'
+
+# file 안에 주석처리된 
+listen_addresses = '*'
+# 찾아서 수정
+
+# 해당 config file 찾아서
+/var/lib/pgsql/data/pg_hba.conf
+nano pg_hba.conf
+
+# 맨 아래부분에 아래 코드 추가
+host  samerole  all 0.0.0.0/0
