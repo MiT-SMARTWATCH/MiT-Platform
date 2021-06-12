@@ -1,0 +1,120 @@
+### Thingsboard 서버(Kafka, PostgreSQL, TimescaleDB on UBUNTU) 구축하기 (출처 : Thingsbaord https://thingsboard.io/docs/user-guide/install/ubuntu/?ubuntuThingsboardDatabase=timescale&ubuntuThingsboardQueue=kafka )
+
+# Installation JAVA 11 (openJDK) - in terminal
+sudo apt update
+sudo apt install openjdk-11-jdk
+
+# JAVA 11 버전을 default로 만들기
+sudo update-alternatives --config java
+
+# download Thingsboard package
+wget https://github.com/thingsboard/thingsboard/releases/download/v3.2.2/thingsboard-3.2.2.deb
+
+# Postgresql Installation
+sudo apt install -y wget
+
+# import the repository signing key:
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+# add repository contents to your system:
+RELEASE=$(lsb_release -cs)
+echo "deb http://apt.postgresql.org/pub/repos/apt/ ${RELEASE}"-pgdg main | sudo tee  /etc/apt/sources.list.d/pgdg.list
+
+# install and launch the postgresql service:
+sudo apt update
+sudo apt -y install postgresql-12
+sudo service postgresql start
+
+## Once postgresql is installed
+# set password
+sudo su - postgres
+psql
+\password
+\q
+
+# Ctrl + d 누른 후 thingsboard database 생성
+psql -U postgres -d postgres -h 127.0.0.1 -W
+CREATE DATABASE thingsboard;
+\q
+
+# install TimescaleDB 아래 링크에서 설명 따라 install
+# https://docs.timescale.com/latest/getting-started/installation/ubuntu/installation-apt-ubuntu
+
+# Thingsboard configuration
+sudo nano /etc/thingsboard/conf/thingsboard.conf
+# 아래 줄 쳐진 configuration 데이터 붙여넣기 한 후  “PUT_YOUR_POSTGRESQL_PASSWORD_HERE” 이 부분에 본인이 설정한 password로 교체
+# -------------------------------------------------------------------------------------------------------------------
+# DB Configuration 
+export DATABASE_ENTITIES_TYPE=sql
+export DATABASE_TS_TYPE=timescale
+export SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+export SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
+export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/thingsboard
+export SPRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=PUT_YOUR_POSTGRESQL_PASSWORD_HERE
+export SPRING_DATASOURCE_MAXIMUM_POOL_SIZE=5
+# Specify Interval size for data chunks storage. Please note that this value can be set only once.
+export SQL_TIMESCALE_CHUNK_TIME_INTERVAL=604800000 # Number of miliseconds. The current value corresponds to one week.
+# --------------------------------------------------------------------------------------------------------------------
+
+# install zookeeper and kafka
+sudo apt-get install zookeeper
+wget https://archive.apache.org/dist/kafka/2.6.0/kafka_2.13-2.6.0.tgz
+tar xzf kafka_2.13-2.6.0.tgz
+sudo mv kafka_2.13-2.6.0 /usr/local/kafka
+
+# zookeeper 시스템 유닛 config 
+sudo nano /etc/systemd/system/zookeeper.service
+# 아래 코드 붙여넣기 후 저장
+#-----------------------------------------------------------------------------------------------
+[Unit]
+Description=Apache Zookeeper server
+Documentation=http://zookeeper.apache.org
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties
+ExecStop=/usr/local/kafka/bin/zookeeper-server-stop.sh
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target
+#-----------------------------------------------------------------------------------------------
+
+sudo nano /etc/systemd/system/kafka.service
+# 아래 코드 붙여넣기 후 “PUT_YOUR_JAVA_PATH” 를 본인 컴퓨터 JAVA_HOME path로 교체
+#-----------------------------------------------------------------------------------------------
+[Unit]
+Description=Apache Kafka Server
+Documentation=http://kafka.apache.org/documentation.html
+Requires=zookeeper.service
+
+[Service]
+Type=simple
+Environment="JAVA_HOME=PUT_YOUR_JAVA_PATH"
+ExecStart=/usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server.properties
+ExecStop=/usr/local/kafka/bin/kafka-server-stop.sh
+
+[Install]
+WantedBy=multi-user.target
+#----------------------------------------------------------------------------------------------
+
+# start service
+sudo systemctl start zookeeper
+sudo systemctl start kafka
+
+# Thingsboard configuration
+sudo nano /etc/thingsboard/conf/thingsboard.conf
+# 코드 붙여넣기 후 저장
+# ------------------------------------------------------
+export TB_QUEUE_TYPE=kafka
+export TB_KAFKA_SERVERS=localhost:9092
+# ------------------------------------------------------
+
+# thingsboard 설치 진행.
+sudo /usr/share/thingsboard/bin/install/install.sh --loadDemo
+
+# Start Thingsboard service
+sudo service thingsboard start
