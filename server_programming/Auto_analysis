@@ -1,3 +1,4 @@
+# 자동분석에 필요한 library
 import os 
 import shutil
 import warnings
@@ -15,7 +16,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.covariance import EllipticEnvelope
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, recall_score
 
-
+# arguement 생성
 parser = argparse.ArgumentParser(description='Find anomalies in wearables time-series data.')
 parser.add_argument('--heart_rate', metavar='', help ='raw heart rate count with a header = heartrate')
 parser.add_argument('--steps',metavar='', help ='raw steps count with a header = steps')
@@ -42,7 +43,7 @@ outliers_fraction =  args.outliers_fraction
 ###################################
 
 class HROSAD_offline:
-
+    
     def HROS(self, heartrate, steps):
         df_hr = pd.read_csv(hr_data)
         df_hr = df_hr.set_index('datetime')
@@ -185,6 +186,7 @@ class HROSAD_offline:
                 b.to_csv(myphd_id_anomalies, mode='a', header=False)        
                 return figure
                 
+# 폴더 내에 저장된 파일들을 list 형식으로                
 entries = os.listdir('/home/cho/Desktop/HROS-AD/COVID-19-Wearables')
 # # entries = os.listdir('./COVID-19-Wearables')
 
@@ -204,7 +206,7 @@ for entry in entries:
 # print(users)
 
 
-
+# 사용자들의 anomaly data 분석 후 png file들 생성
 for user in users:
     # print(user)
     model = HROSAD_offline()
