@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "632064904731",
+    "project_id": "mit-health-5534d",
+    "storage_bucket": "mit-health-5534d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:632064904731:android:e02f3f41e01bc46ba772be",
+        "android_client_info": {
+          "package_name": "com.example.mit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "632064904731-vitg6opfge6opl58uetiilnmrj7dem3c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mit",
+            "certificate_hash": "d32b5898b70e0852edd75957f0681bb6221494ee"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzk6KkO_xpzF4MUNI_AZPCmIcwNZehzpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

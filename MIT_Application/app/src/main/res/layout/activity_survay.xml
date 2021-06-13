@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="205dp"
+        tools:layout_editor_absoluteY="70dp">
+
+        <TextView
+            android:id="@+id/survay_title"
+            android:text="@string/daily_survay"
+            style="@style/title_xml" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="⋎ 해당 항목에 체크해주세요. ⋎"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="------ (  중복 선택이 가능합니다. ) ------"
+            android:textColor="@color/colororangeDark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/editTextTextPersonName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:inputType="textPersonName"
+                    android:text="1-1  오늘의 건강상태"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/symtoms_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <CheckBox
+                                android:id="@+id/checkBox1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|start"
+                                android:gravity="center|left"
+                                android:text="평소와 유사"
+                                android:textSize="15sp" />
+
+                            <CheckBox
+                                android:id="@+id/checkBox2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|start"
+                                android:gravity="center|left"
+                                android:text="피곤/\n극도의 스트레스"
+                                android:textSize="15sp" />
+
+                            <CheckBox
+                                android:id="@+id/checkBox3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|start"
+                                android:gravity="center|left"
+                                android:text="질병초기"
+                                android:textSize="15sp" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <CheckBox
+                                android:id="@+id/checkBox4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|start"
+                                android:gravity="center|left"
+                                android:text="질병"
+                                android:textSize="15sp" />
+
+                            <CheckBox
+                                android:id="@+id/checkBox5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|start"
+                                android:gravity="center|left"
+                                android:text="질병회복"
+                                android:textSize="15sp" />
+
+                            <CheckBox
+                                android:id="@+id/checkBox6"
+                                android:layout_width="127dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|start"
+                                android:gravity="center|left"
+                                android:text="기타"
+                                android:textSize="15sp" />
+
+                        </TableRow>
+
+                    </TableLayout>
+                </LinearLayout>
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <EditText
+                        android:id="@+id/editTextTextPersonName2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:inputType="textPersonName"
+                        android:text="2-2 어떠한 증상을 겪었나요 ?"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="구체적인 증상을 선택하시오. "
+                        android:textColor="@color/black" />
+
+                    <LinearLayout
+                        android:id="@+id/symtoms_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <CheckBox
+                            android:id="@+id/checkBox7"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="두통" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox8"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="복통" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox9"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="기침" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox10"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="피로" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox11"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="오한" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox12"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="설사" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox13"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="인후통" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox14"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="호흡곤란" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox15"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="미각상실" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox16"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="안구통증" />
+                        <CheckBox
+                            android:id="@+id/checkBox17"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="시야 흐림" />
+                        <CheckBox
+                            android:id="@+id/checkBox18"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="어지러움" />
+
+                        <CheckBox
+                            android:id="@+id/checkBox19"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="식욕부진" />
+                        <CheckBox
+                            android:id="@+id/checkBox20"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="기타" />
+
+                        <Button
+                            android:id="@+id/btn_sur"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/colororangeDark"
+                            android:gravity="center"
+                            android:text="설문내용 저장" />
+
+
+                    </LinearLayout>
+
+                </RadioGroup>
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
