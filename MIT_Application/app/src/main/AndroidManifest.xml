@@ -48,7 +48,7 @@
         </activity>
         <activity android:name=".mainhealthcare.Health_login" />
         <activity android:name=".mainhealthcare.Health_signUp" />
-        <activity android:name=".mainhealthcare.Activity_survay" />
+        <activity android:name=".mainhealthcare.Helath_survey" />
 
         <receiver android:name="com.example.alram.AlarmReceiver" />
         <receiver
@@ -78,7 +78,6 @@
         <activity android:name=".mainhealthcare.Health_ToS" />
         <activity android:name=".mainhealthcare.Health_settings" />
         <activity android:name=".mainhealthcare.Alarm.Time_Settings" />
-        <activity android:name=".mainhealthcare.Activity_todo"/>
 
     </application>
 </manifest>
