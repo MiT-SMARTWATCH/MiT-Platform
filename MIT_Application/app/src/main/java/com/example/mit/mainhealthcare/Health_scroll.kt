@@ -56,7 +56,7 @@ class Health_scroll : AppCompatActivity() {
         }
 
         button_survey.setOnClickListener {
-            val intent = Intent(this, Activity_survey::class.java)
+            val intent = Intent(this, Health_survey::class.java)
             startActivity(intent)
         }
 
