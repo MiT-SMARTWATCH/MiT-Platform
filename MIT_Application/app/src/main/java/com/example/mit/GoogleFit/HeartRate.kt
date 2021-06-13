@@ -270,44 +270,6 @@ class HeartRate : AppCompatActivity() {
                         }
                     }
                 }
-//
-//                    if (dataReadResult.buckets.size > 0) {
-//
-//                        for (bucket in dataReadResult.buckets) {
-//                            val dataSets: List<DataSet> = bucket.dataSets
-//                            for (dataSet in dataSets) {
-//                                val dateFormat: DateFormat = DateFormat.getTimeInstance()
-//                                for (dataPoint in dataSet.dataPoints) {
-//                                    for (field in dataPoint.dataType.fields) {
-//                                        val mLastHeartBPM = dataPoint.getValue(field).asFloat().toInt()
-//                                        data_list.add("시간 : " + dateFormat.format(dataPoint.getStartTime(TimeUnit.MILLISECONDS)).toString())
-//                                        data_list.add("심박수 : $mLastHeartBPM BPM")
-//                                        heart_list.add(mLastHeartBPM)
-//                                        data_list.add("\n")
-//                                        println("+++++++++++++++buckets")
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    } else if (dataReadResult.dataSets.size > 0) {
-//
-//                        for (dataSet in dataReadResult.dataSets) {
-//                            //Log.d(tag, "Data returned for Data type: " + dataSet.dataType.name)
-//                            val dateFormat: DateFormat = SimpleDateFormat("YYYY.MM.dd - HH:mm:ss")
-//                            for (dataPoint in dataSet.dataPoints) {
-//
-//                                for (field in dataPoint.dataType.fields) {
-//                                    val mLastHeartBPM = dataPoint.getValue(field).asFloat().toInt()
-//
-//                                    data_list.add("시간 : " + dateFormat.format(dataPoint.getStartTime(TimeUnit.MILLISECONDS)).toString())
-//                                    data_list.add("심박수 : $mLastHeartBPM BPM")
-//                                    heart_list.add(mLastHeartBPM)
-//                                    data_list.add("\n")
-//                                    println("+++++++++++++++dataSets")
-//                                }
-//                            }
-//                        }
-//                    }
 
                 val avg : TextView = this.findViewById(R.id.textView16)
                 val min_max : TextView = this.findViewById(R.id.textView20)
@@ -386,13 +348,12 @@ class HeartRate : AppCompatActivity() {
 
     private fun connect(context: Context, total: Int, times : String, ID :String) {
 
-        val topic = "v1/devices/me/telemetry"
-        val mqttAndroidClient = MqttAndroidClient(context, "tcp://" + "203.255.56.50" + ":1883", MqttClient.generateClientId())
+        val topic = "topic 이름"
+        val mqttAndroidClient = MqttAndroidClient(context, "tcp://" + "ip주소" + ":1883", MqttClient.generateClientId())
 
         try {
             val options = MqttConnectOptions()
-//            options.userName = "G7Y9k68xJUzG3OeDo8vO"
-            options.userName = "FLlvBxWbtZVun7XklaTG"
+            options.userName = "token"
             mqttAndroidClient.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
                     Log.d(TAG, "Connection success")
@@ -400,9 +361,6 @@ class HeartRate : AppCompatActivity() {
                         val sdf = SimpleDateFormat("yyyy-MM-dd-kk-mm")
                         val Timestamp = sdf.parse(times).time
                         val msg = "{\"ts\":$Timestamp,\"values\":{\"heart_rate\":$total}}"
-//                        val msg = "{\"heart_rate\":$total}"
-//                        val msg = "{\"ts\":$Timestamp,\"heart_rate\":$total}"
-
                         val message = MqttMessage()
                         message.payload = msg.toByteArray()
                         mqttAndroidClient.publish("$topic", message.payload, 0, false)
