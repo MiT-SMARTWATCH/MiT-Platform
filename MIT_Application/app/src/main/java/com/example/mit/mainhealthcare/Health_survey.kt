@@ -21,7 +21,7 @@ class Activity_survey : AppCompatActivity() {
 
         try {
             val options = MqttConnectOptions()
-            options.userName = "G7Y9k68xJUzG3OeDo8vO"
+            options.userName = "token" // 토큰
             mqttAndroidClient.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
                     Log.d(com.example.mit.GoogleFit.TAG, "Connection success")
