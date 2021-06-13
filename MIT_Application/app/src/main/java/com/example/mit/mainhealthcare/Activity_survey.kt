@@ -3,21 +3,21 @@ package com.example.mit.mainhealthcare
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.example.mit.databinding.ActivitySurvayBinding
+import com.example.mit.databinding.ActivitySurveyBinding
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
 
-class Activity_survay : AppCompatActivity() {
+class Activity_survey : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySurvayBinding
+    private lateinit var binding: ActivitySurveyBinding
 
 
     //mqtt로 데이터 보내기
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_survey)
-        val topic = "v1/devices/me/telemetry"
-        val mqttAndroidClient = MqttAndroidClient(this, "tcp://" + "203.255.56.50" + ":1883", MqttClient.generateClientId())
+        val topic = "topic "
+        val mqttAndroidClient = MqttAndroidClient(this, "tcp://" + "ip 주소" + ":1883", MqttClient.generateClientId())
 
         try {
             val options = MqttConnectOptions()
@@ -57,7 +57,7 @@ class Activity_survay : AppCompatActivity() {
         })
 
 
-        binding = ActivitySurvayBinding.inflate(layoutInflater)
+        binding = ActivitySurvyBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
