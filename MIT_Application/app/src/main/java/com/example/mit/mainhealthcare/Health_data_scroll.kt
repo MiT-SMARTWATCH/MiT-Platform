@@ -86,10 +86,9 @@ class Health_data_scroll : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        val ip = "203.255.56.50"
-        val jdbcURL = "jdbc:postgresql://$ip:5432/postgres" //서버 주소
+        val jdbcURL = "jdbc:postgresql://ip 주소:5432/postgres" //서버 주소
         val username = "postgres" // 유저 이름
-        val password = "7452" // 비번
+        val password = "" // 비밀번호
 
         try {
             val connection = DriverManager.getConnection(jdbcURL, username, password) //연결한다,
