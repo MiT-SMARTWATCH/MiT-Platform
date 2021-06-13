@@ -331,12 +331,12 @@ class StepCounter: AppCompatActivity() {
     //MQTT 연결
     private fun connect(context: Context, total: Int, ID :String ) {
 
-        val topic = "v1/devices/me/telemetry"
-        val mqttAndroidClient = MqttAndroidClient(context, "tcp://" + "203.255.56.50" + ":1883", MqttClient.generateClientId())
+        val topic = "topic 명"
+        val mqttAndroidClient = MqttAndroidClient(context, "tcp://" + "ip 주소" + ":1883", MqttClient.generateClientId())
 
         try {
             val options = MqttConnectOptions()
-            options.userName =  "FLlvBxWbtZVun7XklaTG" //"G7Y9k68xJUzG3OeDo8vO"
+            options.userName =  "token"
             mqttAndroidClient.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
                     Log.d(TAG, "Connection success")
@@ -391,12 +391,6 @@ class StepCounter: AppCompatActivity() {
             override fun deliveryComplete(token: IMqttDeliveryToken) {}
 
         })
-//        try {
-//            mqttAndroidClient.publish("$topic", "$total".toByteArray(), 0, false)
-//
-//        } catch (e: MqttException) {
-//            e.printStackTrace()
-//        }
 
     }
 
