@@ -80,7 +80,5 @@
         <activity android:name=".mainhealthcare.Alarm.Time_Settings" />
         <activity android:name=".mainhealthcare.Activity_todo"/>
 
-        <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
-
 </manifest>
