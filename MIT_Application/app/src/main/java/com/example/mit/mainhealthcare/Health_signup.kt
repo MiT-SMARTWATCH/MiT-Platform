@@ -78,9 +78,9 @@ class Health_signUp : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        val jdbcURL = "jdbc:postgresql://203.255.56.50:5432/postgres"
-        val username = "postgres"
-        val password = "7452"
+        val jdbcURL = "jdbc:postgresql://ip 주소:5432/postgres"
+        val username = "postgres" // 유저 이름
+        val password = "" //비밀번호
 
 
         try {
@@ -131,9 +131,9 @@ class Health_signUp : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        val jdbcURL = "jdbc:postgresql://203.255.56.50:5432/postgres"
-        val username = "postgres"
-        val password = "7452"
+        val jdbcURL = "jdbc:postgresql://ip 주소:5432/postgres"
+        val username = "postgres" // 유저 이름
+        val password = "" // 비밀번호
 
 
 
