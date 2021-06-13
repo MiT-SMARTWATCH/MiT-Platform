@@ -59,9 +59,9 @@ class Health_login : AppCompatActivity() {
         StrictMode.setThreadPolicy(policy)
 
 
-        val jdbcURL = "jdbc:postgresql://203.255.56.50:5432/postgres"
-        val username = "postgres"
-        val password = "7452"
+        val jdbcURL = "jdbc:postgresql://ip 주소:5432/postgres"
+        val username = "postgres" // 유저이름
+        val password = "" //비밀번호
 
         try {
             val connection = DriverManager.getConnection(jdbcURL, username, password)
@@ -95,14 +95,6 @@ class Health_login : AppCompatActivity() {
                     val statement3 = connection.createStatement()
                     val result3 = statement3.executeQuery(sql3)
 
-//                    val sql4 = "SELECT 신장 FROM information WHERE 아이디='$ID'"
-//                    val statement4 = connection.createStatement()
-//                    val result4 = statement4.executeQuery(sql4)
-//
-//                    val sql5 = "SELECT 몸무게 FROM information WHERE 아이디='$ID'"
-//                    val statement5 = connection.createStatement()
-//                    val result5 = statement5.executeQuery(sql5)
-
 
                     while (result1.next() and result2.next() and result3.next() ) {
                         //and result4.next() and result5.next()
@@ -110,10 +102,6 @@ class Health_login : AppCompatActivity() {
                         val birth = result1.getString("생년월일")
                         val gender = result2.getString("성별")
                         val name = result3.getString("이름")
-
-//                        val height = result4.getString("신장")
-//                        val weight = result5.getString("몸무게")
-
 
                         if (birth != null && gender != null && name != null ) {
                             //&& height != null && weight != null
@@ -126,28 +114,15 @@ class Health_login : AppCompatActivity() {
                             intent.putExtra("ID", ID)
                             intent.putExtra("BIRTH", birth)
                             intent.putExtra("NAME", name)
-//                            intent.putExtra("WEIGHT",weight)
-//                            intent.putExtra("HEIGHT",height)
                             println("-------------------------------------생일 : $birth")
                             println("-------------------------------------아이디 : $ID")
                             println("-------------------------------------성별 : $gender")
                             println("-------------------------------------이름 : $name")
 
-//                            println("-------------------------------------$weight")
-//                            println("-------------------------------------$height")
-
-
-
-
-
                             startActivity(intent)
                             finish()
                         }
                     }
-
-
-
-
 
                 } else {
                     Toast.makeText(this, "로그인 실패했습니다.", Toast.LENGTH_SHORT).show()
@@ -161,7 +136,6 @@ class Health_login : AppCompatActivity() {
             println("Error in connected to PostgreSQL server")
             Toast.makeText(this, " 로그인 실패했습니다.", Toast.LENGTH_SHORT).show()
             e.printStackTrace()
-            println("@@@@@@@@@@@@@")
         }
     }
 }
