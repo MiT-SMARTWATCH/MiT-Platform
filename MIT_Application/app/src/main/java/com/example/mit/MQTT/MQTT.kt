@@ -10,7 +10,7 @@ import java.util.*
 fun MQTT(context: Context, total : String) {
     val TAG = "MqttClientHelper"
 
-    val ip = "203.255.56.50"
+    val ip = "ip 주소"
 
     var serverURI = "tcp://$ip:1883"
     var mqttClient = MqttAndroidClient(context, serverURI, "SmartFarmerApp")
@@ -30,7 +30,7 @@ fun MQTT(context: Context, total : String) {
     })
 
     val options = mqttConnectionOption
-    options.userName = "G7Y9k68xJUzG3OeDo8vO"
+    options.userName = "token"
 
     try {
         mqttClient.connect(options, null, object : IMqttActionListener {
@@ -39,13 +39,11 @@ fun MQTT(context: Context, total : String) {
 
                 while (true){
                     val random = Random()
-                    //val num = random.nextInt(100)
                     val msg = "{\"steps\":$total}"
                     println("{\"steps\":$total}")
                     val message = MqttMessage()
                     message.payload = msg.toByteArray()
-                    mqttClient.publish("v1/devices/me/telemetry", message.payload, 1, false)
-                    //mqttClient.publish("v1/devices/me/telemetry", "$total".toByteArray(), 1, false)
+                    mqttClient.publish("topic 이름", message.payload, 1, false)
                     Thread.sleep(15000L)  // 15초
                     StepCounter().readData()
                 }
