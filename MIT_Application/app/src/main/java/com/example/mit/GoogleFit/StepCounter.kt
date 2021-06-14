@@ -354,9 +354,6 @@ class StepCounter: AppCompatActivity() {
                         mqttAndroidClient.publish("$topic", message.payload, 0, false)
                         Log.d(TAG, "보낸 값 : $msg")
 
-
-
-                        //mqttAndroidClient.subscribe("$topic", 0) //연결에 성공하면 jmlee 라는 토픽으로 subscribe함
                     } catch (e: MqttException                                                                                                                                                                                                                                                                                                 ) {
                         e.printStackTrace()
                         Log.d(TAG, "Connection Fail : $e")
