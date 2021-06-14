@@ -62,13 +62,7 @@ class Health_signUp : AppCompatActivity() {
             //입력받은 값들을 데이터 베이스에 전송
 
             connect("$ID", "$PW", "$NAME", "$BIRTH", "$GENDER")
-
-
-        }
-
-
-
-
+        }   
     }
 
     /** postgreSQL 연결 및 botton1 클릭 시 값 전달 */
@@ -167,6 +161,3 @@ class Health_signUp : AppCompatActivity() {
 
     }
 }
-
-
-
