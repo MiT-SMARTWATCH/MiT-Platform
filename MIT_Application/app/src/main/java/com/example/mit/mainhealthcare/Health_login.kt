@@ -41,11 +41,6 @@ class Health_login : AppCompatActivity() {
             login("$ID", "$PW")
 
             //아이디 입력창에 입력된 정보를 문자형식으로 저장 -> Health_data ID_data 로 출력
-
-//            val intent = Intent(this,Health_data::class.java)
-//            intent.putExtra("ID", login_id.text.toString())
-//            startActivity(intent)
-
         }
     }
 
