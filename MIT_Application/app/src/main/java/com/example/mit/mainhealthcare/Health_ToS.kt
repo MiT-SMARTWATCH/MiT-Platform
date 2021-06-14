@@ -61,12 +61,6 @@ class Health_ToS : AppCompatActivity() {
                 button.isEnabled = false
                 Toast.makeText(this, "----------", Toast.LENGTH_SHORT).show()
 
-
-
-
-
-
-
             }
         }
 
