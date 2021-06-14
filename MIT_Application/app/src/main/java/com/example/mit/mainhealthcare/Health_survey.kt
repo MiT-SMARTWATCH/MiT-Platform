@@ -168,10 +168,6 @@ class Activity_survey : AppCompatActivity() {
             }
             // "기타 " }
 
-
-
-
-
             // 설문 내용이 포함된 리스트 출력
 
             println("========================")
@@ -197,49 +193,3 @@ class Activity_survey : AppCompatActivity() {
 
         }
     }
-
-//    private val disconnectedBufferOptions: DisconnectedBufferOptions
-//        private get() {
-//            val disconnectedBufferOptions = DisconnectedBufferOptions()
-//            disconnectedBufferOptions.isBufferEnabled = true
-//            disconnectedBufferOptions.bufferSize = 100
-//            disconnectedBufferOptions.isPersistBuffer = true
-//            disconnectedBufferOptions.isDeleteOldestMessages = false
-//            return disconnectedBufferOptions
-//        }
-//    private val mqttConnectionOption: MqttConnectOptions
-//        private get() {
-//            val mqttConnectOptions = MqttConnectOptions()
-//            mqttConnectOptions.isCleanSession = false
-//            mqttConnectOptions.isAutomaticReconnect = true
-//            mqttConnectOptions.setWill("offline", "offline".toByteArray(), 1, true)
-//            return mqttConnectOptions
-//        }
-}
-
-//
-//    fun thread() {
-//
-//        // 실행간격 지정(3초)
-//        val sleepSec = 3
-//
-//        // 시간 출력 포맷
-//        val fmt = SimpleDateFormat("HH:mm:ss")
-//        // 주기적인 작업을 위한
-//        val exec = ScheduledThreadPoolExecutor(1)
-//        exec.scheduleAtFixedRate({
-//            try {
-//                val cal = Calendar.getInstance()
-//
-//                // 콘솔에 현재 시간 출력
-//                println(fmt.format(cal.time))
-//
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//
-//
-//                // 에러 발생시 Executor를 중지시킨다
-//                exec.shutdown()
-//            }
-//        }, 0, sleepSec.toLong(), TimeUnit.SECONDS)
-//    }
