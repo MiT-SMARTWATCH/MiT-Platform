@@ -1,3 +1,9 @@
+"""
+editor : hyeonLIB
+os : ubuntu 20.04
+python version : 3.8
+"""
+
 import threading, time
 from kafka import KafkaAdminClient, KafkaConsumer, KafkaProducer
 from kafka.admin import NewTopic
