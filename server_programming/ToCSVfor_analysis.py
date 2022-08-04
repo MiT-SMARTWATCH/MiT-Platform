@@ -1,3 +1,9 @@
+"""
+editor : hyeonLIB
+os : ubuntu 20.04
+python version : 3.8
+"""
+
 import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
