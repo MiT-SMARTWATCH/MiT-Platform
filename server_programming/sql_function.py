@@ -1,4 +1,8 @@
-# Python version : 3.8
+"""
+editor : hyeonLIB
+os : ubuntu 20.04
+python version : 3.8
+"""
 
 import pandas as pd
 import psycopg2
