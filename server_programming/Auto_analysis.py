@@ -1,3 +1,9 @@
+"""
+editor : hyeonLIB
+os : ubuntu 20.04
+python version : 3.8
+"""
+
 # 폴더 내에 저장된 파일들을 list 형식으로                
 entries = os.listdir('/home/cho/Desktop/HROS-AD/COVID-19-Wearables')
 # # entries = os.listdir('./COVID-19-Wearables')
