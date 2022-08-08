@@ -10,8 +10,7 @@ import pandas as pd
 import psycopg2
 from sqlalchemy import create_engine
 import argparse
-import paho.mqtt.client as mqtt
-
+import paho.mqtt.client as paho
 import sql_function
 # import hrosad_offline
 # import rhrad_offline
@@ -55,11 +54,11 @@ def extract_hrsteps(device_id):
 def down_sampling(time, hr_data, steps_data):
     hr_data = hr_data.set_index(pd.to_datetime(hr_data['ts'], unit='ms')) 
     steps_data = steps_data.set_index(pd.to_datetime(steps_data['ts'], unit='ms'))
-    hr_data = hr_data['long_v'] # needs column name?
+    hr_data = hr_data['long_v'] # the dataframe needs column name?
     steps_data = steps_data['long_v']
 
     hr_data = hr_data.resample(time).mean()
-    steps_data = steps_data.resample(time).sum() # is that right?
+    steps_data = steps_data.resample(time).sum() # I'm not sure that it is accurate
 
     return hr_data, steps_data
 
@@ -84,51 +83,74 @@ def anomaly_detection():
 
 
 # mqtt tools
-def mqtt_message(device_id):
-    """
-    tools to send the result to server
-    """
-    print("hello")
-    # import context  # Ensures paho is in PYTHONPATH
-    # import paho.mqtt.client as mqtt
-    # import paho.mqtt.publish as publish
+def mqtt_message(device_id, ACCESS_TOKEN, message):
+    try:
+        """
+        tools to send the result to server
+        """
+        broker=ip_address
+        port=1883 
 
-    # msgs = [{'topic': "paho/test/multiple", 'payload': "multiple 1"}, ("paho/test/multiple", "multiple 2", 0, False)]
-    # publish.multiple(msgs, hostname="mqtt.eclipseprojects.io")
-    
-    import paho.mqtt.client as mqtt #import the client1
-    broker_address="203.255.56.50" 
-    #broker_address="iot.eclipse.org" #use external broker
+        def on_publish(client,userdata,result):
+            print(f"{device_id} - Has been connected successfully \n")
+            pass
 
-    client = mqtt.Client(device_id)
-    client.connect(broker_address)
-    client.publish("house/main-light","OFF")
-
-
+        client1= paho.Client("control")
+        client1.on_publish = on_publish
+        client1.username_pw_set(ACCESS_TOKEN)
+        client1.connect(broker,port)
+        client1.publish("v1/devices/me/telemetry",message) #topic-v1/devices/me/telemetry
+        print(f"{device_id} - Abnormal points have been sent to the server \n")
+    except:
+        print("There's something wrong with network")
 
 
 # def run()
 
 
-
+# try except 
 # def main(opt):
 def main():
-    ## extract data of each device in thingsboard database
-    sql = 'SELECT device_id, credentials_id FROM device_credentials;' # list of devices
-    devices_data = sql_function.extractData(sql, database_name='thingsboard')
-    list_device_id = devices_data['device_id']
-    list_token_key = devices_data['credentials_id']
-
+    try:
+        ## extract data of each device in thingsboard database
+        sql = 'SELECT device_id, credentials_id FROM device_credentials;' # list of devices
+        devices_data = sql_function.extractData(sql, database_name='thingsboard')
+        list_device_id = devices_data['device_id']
+        list_token_key = devices_data['credentials_id']
+    except:
+        print("There's something wrong with PostgreSQL database")
+    
     for device_id in list_device_id:
-        hr_data, steps_data = extract_hrsteps(device_id)
-        if hr_data.empty:
-            pass
+        try:
+            hr_data, steps_data = extract_hrsteps(device_id)
+            if hr_data.empty:
+                pass
+            else:
+                print(device_id)
+                sampling_rate = 'T'
+                hr_data, steps_data = down_sampling(sampling_rate, hr_data, steps_data)
+        except:
+            print("Error has been occured while sampling")
+    
+        # analysis
+        try:
+            print("analysis")
+        except:
+            print("error")
         
-        else:
-            print(device_id)
-            sampling_rate = 'T'
-            hr_data, steps_data = down_sampling(sampling_rate, hr_data, steps_data)
+        # MQTT
+        try:
+            print("mqtt")
+        except:
+            print("error")
 
+        # LOG
+
+# # message
+# payload="{"
+# payload+="\"Humidity\":60,"; 
+# payload+="\"Temperature\":25"; 
+# payload+="}"
 
 
 if __name__ == "__main__":
