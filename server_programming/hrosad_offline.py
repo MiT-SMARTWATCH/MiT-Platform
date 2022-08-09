@@ -19,27 +19,24 @@ class HROSAD_offline:
 
     def HROS(self, df_hr, df_steps):
 
-        # df_hr = df_hr.set_index('ts')
         df_hr.index.name = None
         df_hr.index = pd.to_datetime(df_hr.index)
-        # df_steps = df_steps.set_index('ts')
         df_steps.index.name = None
         df_steps.index = pd.to_datetime(df_steps.index)
 
         df_steps['steps'] = df_steps['steps'].apply(lambda x: x + 1)
 
-        # merge dataframes
         df1 = pd.merge(df_hr, df_steps, left_index=True, right_index=True)
         df1['heartrate'] = (df1['heartrate']/df1['steps']) 
         return df1
 
      # pre-processing ------------------------------------------------------
 
-    def pre_processing(self, resting_heart_rate):
+    def pre_processing(self, resting_heart_rate, roll):
 
         # smooth data
         df_nonas = resting_heart_rate.dropna()
-        df1_rom = df_nonas.rolling(350).mean() # 300혹은 350이 실험결과 제일 최적화됨
+        df1_rom = df_nonas.rolling(roll).mean() # 300혹은 350이 실험결과 제일 최적화됨
         # resample
         df2 = df1_rom.resample('1H').mean()
         df2 = df2.dropna()
@@ -81,7 +78,6 @@ class HROSAD_offline:
         preds = preds.rename(lambda x: 'anomaly' if x == 0 else x, axis=1)
         data = std_data.reset_index()
         data = data.join(preds)
-        print(data)
         return data
 
     # Visualization ------------------------------------------------------
@@ -95,7 +91,6 @@ class HROSAD_offline:
                 b = a[(a['heartrate']> 0)]
                 ax.bar(results['index'], results['heartrate'], linestyle='-',color='midnightblue' ,lw=6, width=0.01)
                 ax.scatter(b['index'],b['heartrate'], color='red', label='Anomaly', s=500)
-                # We change the fontsize of minor ticks label
                 ax.tick_params(axis='both', which='major', color='blue', labelsize=60)
                 ax.tick_params(axis='both', which='minor', color='blue', labelsize=60)
                 ax.set_title('Result',fontweight="bold", size=50) # Title
@@ -103,21 +98,17 @@ class HROSAD_offline:
                 ax.tick_params(axis='both', which='major', labelsize=60)
                 ax.tick_params(axis='both', which='minor', labelsize=60)
                 ax.xaxis.set_major_locator(mdates.DayLocator(interval=7))
-                #ax.tick_params(labelrotation=90,fontsize=14)
                 ax.grid(zorder=0)
                 ax.grid(True)
-                #plt.legend()
+                plt.legend()
                 plt.xticks(fontsize=30, rotation=90)
                 plt.yticks(fontsize=50)
                 ax.patch.set_facecolor('white')
                 fig.patch.set_facecolor('white')
-                plt.show()      
-                file_path = device_id
-                figure = fig.savefig(file_path, bbox_inches='tight')  
-                # Anomaly results
-                # b['Anomalies'] = myphd_id
-                # b.to_csv(myphd_id_anomalies, mode='a', header=False)        
-                # return figure
+                fig_path = f'./data/result/plot/{device_id}.png'
+                csv_path = f'./data/result/csv/{device_id}.csv'
+                fig.savefig(fig_path,bbox_inches='tight')
+                b.to_csv(csv_path, mode='a', header=False)
 
         except:
             with plt.style.context('fivethirtyeight'):
@@ -139,8 +130,7 @@ class HROSAD_offline:
                 plt.yticks(fontsize=50)
                 ax.patch.set_facecolor('white')
                 fig.patch.set_facecolor('white')     
-                # figure = fig.savefig(myphd_id_figure, bbox_inches='tight')  
-                # # Anomaly results
-                # b['Anomalies'] = myphd_id
-                # b.to_csv(myphd_id_anomalies, mode='a', header=False)        
-                # return figure
+                fig_path = f'./data/result/plot/{device_id}.png'
+                csv_path = f'./data/result/csv/{device_id}.csv'
+                fig.savefig(fig_path,bbox_inches='tight')
+                b.to_csv(csv_path, mode='a', header=False)

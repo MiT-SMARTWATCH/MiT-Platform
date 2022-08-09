@@ -1,5 +1,6 @@
 """
 editor : hyeonLIB
+email : lemonjames96@gmail.com
 os : ubuntu 20.04
 python version : 3.8
 """
@@ -24,8 +25,17 @@ global ip_address, password
 ip_address = args.ip
 password = args.pw
 
-# ip_address = '203.255.56.50'
-# password = 'sselab0812!'
+result_path = './data/result'
+log_path = './data/log'
+
+if not os.path.exists(result_path): 
+    plot_path = result_path+'/plot'
+    csv_path = result_path+'/csv'
+    os.makedirs(plot_path)
+    os.makedirs(csv_path)
+if not os.path.exists(log_path):
+    os.makedirs(log_path)
+
 
 """
 ## extract data of each person (interval = 1 month)
@@ -64,31 +74,24 @@ def down_sampling(time, hr_data, steps_data):
 
 
 # execute anomaly detection
-def anomaly_detection(hr_data, steps_data):
-    # try:
-    model = hrosad_offline.HROSAD_offline()
-    df1 = model.HROS(hr_data, steps_data)
-    df2 = model.pre_processing(df1)
-    sdHR = df2[['heartrate']]
-    sdSteps = df2[['steps']]
-    data_seasnCorec = model.seasonality_correction(sdHR, sdSteps)
-    data_seasnCorec += 0.1
-    std_data = model.standardization(data_seasnCorec)
-    data = model.anomaly_detection(std_data)
-    model.visualize(data)
-    # except:
-    #     print("Error has been occured while detecting anomalies")
+def anomaly_detection(hr_data, steps_data, device_id, visualize=False):
+    try:
+        model = hrosad_offline.HROSAD_offline()
+        df1 = model.HROS(hr_data, steps_data)
+        roll = 300
+        df2 = model.pre_processing(df1, roll)
+        sdHR = df2[['heartrate']]
+        sdSteps = df2[['steps']]
+        data_seasnCorec = model.seasonality_correction(sdHR, sdSteps)
+        data_seasnCorec += 0.1
+        std_data = model.standardization(data_seasnCorec)
+        data = model.anomaly_detection(std_data)
+        if visualize==True:
+            model.visualize(data, device_id)
 
-# post anomaly points from csv files made by anomaly detection
-# def
-
-
-# log function
-# def
-
-
-# plot capturing
-# def
+        return data
+    except:
+        print("Error has been occured while detecting anomalies")
 
 
 # mqtt tools
@@ -113,12 +116,16 @@ def mqtt_message(device_id, ACCESS_TOKEN, message):
     except:
         print("There's something wrong with network")
 
+# post anomaly points from csv files made by anomaly detection
+# def
 
-# def run()
+
+# log function
+# def
 
 
-# try except 
-# def main(opt):
+
+
 def main():
     try:
         ## extract data of each device in thingsboard database
@@ -126,22 +133,34 @@ def main():
         devices_data = sql_function.extractData(sql, database_name='thingsboard')
         list_device_id = devices_data['device_id']
         list_token_key = devices_data['credentials_id']
+        list_device = devices_data[['device_id','credentials_id']]
+        print(list_device)
     except:
         print("There's something wrong with PostgreSQL database")
     
-    for device_id in list_device_id:
-        hr_data, steps_data = extract_hrsteps(device_id)
-        if hr_data.empty:
-            pass
-        else:
-            try:
-                print(device_id)
-                sampling_rate = 'T'
-                hr_data, steps_data = down_sampling(sampling_rate, hr_data, steps_data)
-            except:
-                print("Error has been occured while sampling")
+    # for device_id in list_device_id:
+    for device in list_device:
+        print(device)
+
+        device_id = ''
+        token_key = ''
+        # hr_data, steps_data = extract_hrsteps(device_id)
+        # if hr_data.empty:
+        #     pass
+        # else:
+        #     try:
+        #         print(device_id)
+        #         sampling_rate = 'T'
+        #         hr_data, steps_data = down_sampling(sampling_rate, hr_data, steps_data)
+        #     except:
+        #         print("Error has been occured while sampling")
             
-            anomaly_detection(hr_data, steps_data)
+        #     result = anomaly_detection(hr_data, steps_data, device_id)
+        #     # result = anomaly_detection(hr_data, steps_data, device_id, visualize=True)
+
+        #     a = result.loc[result['anomaly'] == -1, ('index', 'heartrate')]
+        #     b = a[(a['heartrate']> 0)]
+        #     print(b)
 
             
         # MQTT
