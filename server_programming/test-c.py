@@ -53,10 +53,14 @@ def extract_hrsteps(device_id):
 def down_sampling(time, hr_data, steps_data):
     hr_data = hr_data.set_index(pd.to_datetime(hr_data['ts'], unit='ms')) 
     steps_data = steps_data.set_index(pd.to_datetime(steps_data['ts'], unit='ms'))
-    hr_data['heartrate'] = hr_data['long_v'] 
+    # hr_data = hr_data['long_v']
+    hr_data['heartrate'] = hr_data['long_v'] # the dataframe needs column name? -> yea
     hr_data = hr_data.drop(columns=['long_v','ts'])
-    steps_data['steps'] = steps_data['long_v'] 
+    # steps_data = steps_data['long_v']
+    steps_data['steps'] = steps_data['long_v'] # the dataframe needs column name? -> yea
     steps_data = steps_data.drop(columns=['long_v','ts'])
+    # print(steps_data['steps'])
+
     hr_data = hr_data.resample(time).mean()
     steps_data = steps_data.resample(time).sum() # I'm not sure that it is accurate
 
@@ -64,20 +68,11 @@ def down_sampling(time, hr_data, steps_data):
 
 
 # execute anomaly detection
-def anomaly_detection(hr_data, steps_data):
-    # try:
-    model = hrosad_offline.HROSAD_offline()
-    df1 = model.HROS(hr_data, steps_data)
-    df2 = model.pre_processing(df1)
-    sdHR = df2[['heartrate']]
-    sdSteps = df2[['steps']]
-    data_seasnCorec = model.seasonality_correction(sdHR, sdSteps)
-    data_seasnCorec += 0.1
-    std_data = model.standardization(data_seasnCorec)
-    data = model.anomaly_detection(std_data)
-    model.visualize(data)
-    # except:
-    #     print("Error has been occured while detecting anomalies")
+def anomaly_detection():
+    print("hros")
+    print("rhr")
+    print("both")
+
 
 # post anomaly points from csv files made by anomaly detection
 # def
@@ -134,30 +129,10 @@ def main():
         if hr_data.empty:
             pass
         else:
-            try:
-                print(device_id)
-                sampling_rate = 'T'
-                hr_data, steps_data = down_sampling(sampling_rate, hr_data, steps_data)
-            except:
-                print("Error has been occured while sampling")
-            
-            anomaly_detection(hr_data, steps_data)
-
-            
-        # MQTT
-        # try:
-        #     print("mqtt")
-        # except:
-        #     print("error")
-
-        # LOG
-
-# # message
-# payload="{"
-# payload+="\"Humidity\":60,"; 
-# payload+="\"Temperature\":25"; 
-# payload+="}"
-
+            print(device_id)
+            sampling_rate = 'T'
+            hr_data, steps_data = down_sampling(sampling_rate, hr_data, steps_data)
+        
 
 if __name__ == "__main__":
     # opt = parse_opt()
