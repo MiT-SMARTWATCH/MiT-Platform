@@ -16,15 +16,17 @@ import sql_function
 import hrosad_offline
 # import rhrad_offline
 
-parser = argparse.ArgumentParser(description='function for postgresql')
-parser.add_argument('--ip',default = '203.255.56.50', metavar='', help ='ip x of database server')
-parser.add_argument('--pw',metavar='',default = 'sselab0812!', help ='password for database')
-args = parser.parse_args()
+# parser = argparse.ArgumentParser(description='function for postgresql')
+# parser.add_argument('--ip',default = '203.255.56.50', metavar='', help ='ip x of database server')
+# parser.add_argument('--pw',metavar='',default = 'sselab0812!', help ='password for database')
+# args = parser.parse_args()
 
-global ip_address, password
-ip_address = args.ip
-password = args.pw
+# global ip_address, password
+# ip_address = args.ip
+# password = args.pw
 
+ip_address = '203.255.56.50'
+password = 'sselab0812!'
 result_path = './data/result'
 log_path = './data/log'
 
@@ -95,23 +97,28 @@ def anomaly_detection(hr_data, steps_data, device_id, visualize=False):
 
 
 # mqtt tools
-def mqtt_message(device_id, ACCESS_TOKEN, message):
+def mqtt_message(device_id, ACCESS_TOKEN):
     try:
         """
         tools to send the result to server
         """
         broker=ip_address
         port=1883 
-
+        ACCESS_TOKEN = 'XVvlK6WaVhezNSC3dXoL'
         def on_publish(client,userdata,result):
-            print(f"{device_id} - Has been connected successfully \n")
+            # print(f"{device_id} - Has been connected successfully \n")
+            print("good")
             pass
 
+        payload="{"
+        payload+="\"Humidity\":60,"; 
+        payload+="\"Temperature\":25"; 
+        payload+="}"
         client1= paho.Client("control")
         client1.on_publish = on_publish
         client1.username_pw_set(ACCESS_TOKEN)
         client1.connect(broker,port)
-        client1.publish("v1/devices/me/telemetry",message) #topic-v1/devices/me/telemetry
+        client1.publish("v1/devices/me/telemetry",payload) #topic-v1/devices/me/telemetry
         print(f"{device_id} - Abnormal points have been sent to the server \n")
     except:
         print("There's something wrong with network")
@@ -138,12 +145,19 @@ def main():
     except:
         print("There's something wrong with PostgreSQL database")
     
-    # for device_id in list_device_id:
-    for device in list_device:
-        print(device)
+    device_id = 'f9347170-d108-11ec-aa1e-4161a1661843'
+    device_id = 'd4a6da40-c87b-11ec-aa1e-4161a1661843'
+    ACCESS_TOKEN = 'NhNYfaHJTkHsQC6XB4Tu'
+    ACCESS_TOKEN = 'XVvlK6WaVhezNSC3dXoL'
 
-        device_id = ''
-        token_key = ''
+    mqtt_message(device_id, ACCESS_TOKEN)
+
+    # for device_id in list_device_id:
+    # for device in list_device:
+    #     print(device)
+
+    #     device_id = ''
+    #     token_key = ''
         # hr_data, steps_data = extract_hrsteps(device_id)
         # if hr_data.empty:
         #     pass
