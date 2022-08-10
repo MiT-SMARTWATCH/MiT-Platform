@@ -1,3 +1,10 @@
+"""
+editor : hyeonLIB
+email : lemonjames96@gmail.com
+os : ubuntu 20.04
+python version : 3.8
+"""
+
 from time import sleep
 from time import *             #meaning from time import EVERYTHING
 import time
