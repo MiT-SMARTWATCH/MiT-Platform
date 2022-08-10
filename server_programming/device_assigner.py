@@ -8,6 +8,7 @@ python version : 3.8
 from ipaddress import ip_address
 from time import sleep
 from time import *
+import os
 import time
 import datetime
 import pandas as pd
@@ -20,7 +21,7 @@ from tb_rest_client.rest_client_ce import *
 from tb_rest_client.rest import ApiException
 print("successed to import all the libraries you need")
 
-ip_address = '203.255.56.50'
+ip_address = 'localhost'
 password = "sselab0812!"
 # ThingsBoard URL
 url = "http://localhost:8080"
@@ -56,7 +57,8 @@ def MakeDeviceForRegister(user_id, password, url, tb_username, tb_password):
             rest_client.login(username=tb_username, password=tb_password)
 
             # creating a Device
-            device = Device(name=device_name, type="smartwatch")
+            # device = Device(name=device_name, type="smartwatch")
+            device = Device(name=device_name, type="smartwatch", device_profile_id="a6140800-80fb-11ec-b3b9-19d4272987ca")
             device = rest_client.save_device(device)
 
             logging.info(" Device was created:\n%r\n", device)
@@ -78,6 +80,8 @@ def MakeDeviceForRegister(user_id, password, url, tb_username, tb_password):
     engine_Thingsboard.dispose()
     engine_account.dispose()
 
+    return token_key
+
 
 # mqtt tools
 def initialize_key(ACCESS_TOKEN):
@@ -93,14 +97,13 @@ def initialize_key(ACCESS_TOKEN):
             pass
         # initialize_msg = '{}'
         initialize_msg = {'condition':'','condition_score':'','heart_rate':50,'state':'','steps':1,'survey1':'','survey2':'','survey3':'','symptom':''}
-
-        client1= paho.Client("control")
-        client1.on_publish = on_publish
-        client1.username_pw_set(ACCESS_TOKEN)
-        client1.connect(broker,port)
-        client1.publish("v1/devices/me/telemetry",initialize_msg) #topic-v1/devices/me/telemetry
+        
+        command = "mosquitto_pub -d -q 1 -h "+"localhost "+ "-t "+"v1/devices/me/telemetry " + "-u " +ACCESS_TOKEN+' ' +'-m ' +f"\"{initialize_msg}\""
+        print(command)
+        os.system(command)
     except:
         print("There's something wrong with network")
+        
 
 engine_Account = createEngineAccount(password)
 print("Successed to create engine")
@@ -124,12 +127,17 @@ while True:
         print("assigning log : ",user_id_list)
         for user_id in user_id_list:
             try:
-                MakeDeviceForRegister(user_id, password, url, tb_username, tb_password)
+                ACCESS_TOKEN = MakeDeviceForRegister(user_id, password, url, tb_username, tb_password)
                 current_timestamp = datetime.datetime.now()
                 print(f"log [{current_timestamp}] : {user_id}device assigned successfully!")
+                initialize_key(ACCESS_TOKEN)
             except:
                 current_timestamp = datetime.datetime.now()
                 print(f"ERROR [{current_timestamp}] : error has been occured!")
+            # ACCESS_TOKEN = MakeDeviceForRegister(user_id, password, url, tb_username, tb_password)
+            # current_timestamp = datetime.datetime.now()
+            # print(f"log [{current_timestamp}] : {user_id}device assigned successfully!")
+            # initialize_key(ACCESS_TOKEN)
 
     else:
         print(f"log [{current_timestamp}] : None has tried to register in our application")

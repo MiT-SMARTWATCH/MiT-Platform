@@ -7,25 +7,26 @@ python version : 3.8
 
 import os
 import time
+import datetime
 import pandas as pd
 import psycopg2
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, values
 import argparse
 import paho.mqtt.client as paho
 import sql_function
 import hrosad_offline
 # import rhrad_offline
 
-# parser = argparse.ArgumentParser(description='function for postgresql')
-# parser.add_argument('--ip',default = '203.255.56.50', metavar='', help ='ip x of database server')
-# parser.add_argument('--pw',metavar='',default = 'sselab0812!', help ='password for database')
-# args = parser.parse_args()
+parser = argparse.ArgumentParser(description='function for postgresql')
+parser.add_argument('--ip',default = 'localhost', metavar='', help ='ip x of database server')
+parser.add_argument('--pw',default = 'sselab0812!', metavar='',default = 'sselab0812!', help ='password for database')
+args = parser.parse_args()
 
-# global ip_address, password
-# ip_address = args.ip
-# password = args.pw
+global ip_address, password
+ip_address = args.ip
+password = args.pw
 
-ip_address = '203.255.56.50'
+ip_address = '127.0.0.1'
 password = 'sselab0812!'
 result_path = './data/result'
 log_path = './data/log'
@@ -47,7 +48,7 @@ if not os.path.exists(log_path):
    -> mqtt library and add logs
 """
 
-def extract_hrsteps(device_id):
+def extract_hrsteps(device_id): # need to apply datetime 
     sql = 'SELECT * FROM ts_kv_dictionary;'
     keys = sql_function.extractData(sql, database_name='thingsboard')
     key_hr = keys[keys['key']=='heart_rate']['key_id'].item()
@@ -70,13 +71,13 @@ def down_sampling(time, hr_data, steps_data):
     steps_data['steps'] = steps_data['long_v'] 
     steps_data = steps_data.drop(columns=['long_v','ts'])
     hr_data = hr_data.resample(time).mean()
-    steps_data = steps_data.resample(time).sum() # I'm not sure that it is accurate
+    steps_data = steps_data.resample(time).sum() 
 
     return hr_data, steps_data
 
 
 # execute anomaly detection
-def anomaly_detection(hr_data, steps_data, device_id, visualize=False):
+def hros_anomaly_detection(hr_data, steps_data, device_id, visualize=False):
     try:
         model = hrosad_offline.HROSAD_offline()
         df1 = model.HROS(hr_data, steps_data)
@@ -97,39 +98,61 @@ def anomaly_detection(hr_data, steps_data, device_id, visualize=False):
 
 
 # mqtt tools
-def mqtt_message(device_id, ACCESS_TOKEN):
+def mqtt_message(device_id, ACCESS_TOKEN, msg):
     try:
         """
         tools to send the result to server
         """
         broker=ip_address
-        port=1883 
-        ACCESS_TOKEN = 'XVvlK6WaVhezNSC3dXoL'
+        port=1883
+
         def on_publish(client,userdata,result):
-            # print(f"{device_id} - Has been connected successfully \n")
-            print("good")
+            print(f"{device_id} - Has been connected successfully \n")
             pass
 
-        payload="{"
-        payload+="\"Humidity\":60,"; 
-        payload+="\"Temperature\":25"; 
-        payload+="}"
-        client1= paho.Client("control")
-        client1.on_publish = on_publish
-        client1.username_pw_set(ACCESS_TOKEN)
-        client1.connect(broker,port)
-        client1.publish("v1/devices/me/telemetry",payload) #topic-v1/devices/me/telemetry
+        ''' 
+        # client1= paho.Client("control")
+        # client1.on_publish = on_publish
+        # client1.username_pw_set(ACCESS_TOKEN)
+        # client1.connect(broker,port)
+        # payload = '{"e":2}'
+        # client1.publish("v1/devices/me/telemetry",payload) #topic-v1/devices/me/telemetry
+        '''
+        
+        command = "mosquitto_pub -d -q 1 -h "+"localhost "+ "-t "+"v1/devices/me/telemetry " + "-u " +ACCESS_TOKEN+' ' +'-m ' +f"\"{msg}\""
+        # command = f'mosquitto_pub -d -q 1 -h localhost -t v1/devices/me/telemetry -u {ACCESS_TOKEN} -m "{msg}"'
+        print(command)
+        os.system(command)
         print(f"{device_id} - Abnormal points have been sent to the server \n")
     except:
         print("There's something wrong with network")
 
-# post anomaly points from csv files made by anomaly detection
-# def
 
+# post anomaly points from csv files made by anomaly detection
+def data_to_mqtt(result, anomalies, device_id, ACCESS_TOKEN):
+    try:
+        for index in range(len(result)):
+            timestamp = result.iloc[index,0]
+            timestamp = int(datetime.datetime.timestamp(timestamp)*1000)
+            value = result.iloc[index,1]
+            msg = {"ts" : timestamp,"values":{"std_hr":value}}
+            mqtt_message(device_id, ACCESS_TOKEN, msg)
+    except:
+        print("Error has been occured while sending mqtt data")
+    
+    try:
+        for index in range(len(anomalies)):
+            timestamp = anomalies.iloc[index,0]
+            timestamp = int(datetime.datetime.timestamp(timestamp)*1000)
+            value = anomalies.iloc[index,1]
+            msg = {"ts" : timestamp,"values":{"abnormal_point":value}}
+            mqtt_message(device_id, ACCESS_TOKEN, msg)
+    except:
+        print("Error has been occured while sending mqtt data")
+        
 
 # log function
 # def
-
 
 
 
@@ -138,58 +161,41 @@ def main():
         ## extract data of each device in thingsboard database
         sql = 'SELECT device_id, credentials_id FROM device_credentials;' # list of devices
         devices_data = sql_function.extractData(sql, database_name='thingsboard')
-        list_device_id = devices_data['device_id']
-        list_token_key = devices_data['credentials_id']
         list_device = devices_data[['device_id','credentials_id']]
-        print(list_device)
     except:
         print("There's something wrong with PostgreSQL database")
-    
-    device_id = 'f9347170-d108-11ec-aa1e-4161a1661843'
-    device_id = 'd4a6da40-c87b-11ec-aa1e-4161a1661843'
-    ACCESS_TOKEN = 'NhNYfaHJTkHsQC6XB4Tu'
-    ACCESS_TOKEN = 'XVvlK6WaVhezNSC3dXoL'
 
-    mqtt_message(device_id, ACCESS_TOKEN)
+    print('****************************************************************')
+    print('Device information')
+    print(list_device)
+    print('****************************************************************')
+    for index in range(len(list_device)):
+        print('----------------------------------------------------------------')
+        device_id = list_device.iloc[index,0]
+        ACCESS_TOKEN = list_device.iloc[index,1]
+        print(device_id, ACCESS_TOKEN)
 
-    # for device_id in list_device_id:
-    # for device in list_device:
-    #     print(device)
-
-    #     device_id = ''
-    #     token_key = ''
-        # hr_data, steps_data = extract_hrsteps(device_id)
-        # if hr_data.empty:
-        #     pass
-        # else:
-        #     try:
-        #         print(device_id)
-        #         sampling_rate = 'T'
-        #         hr_data, steps_data = down_sampling(sampling_rate, hr_data, steps_data)
-        #     except:
-        #         print("Error has been occured while sampling")
+        hr_data, steps_data = extract_hrsteps(device_id)
+        if hr_data.empty:
+            pass
+        else:
+            try:
+                sampling_rate = 'T'
+                hr_data, steps_data = down_sampling(sampling_rate, hr_data, steps_data)
+            except:
+                print("Error has been occured while sampling")
             
-        #     result = anomaly_detection(hr_data, steps_data, device_id)
-        #     # result = anomaly_detection(hr_data, steps_data, device_id, visualize=True)
+            # result = hros_anomaly_detection(hr_data, steps_data, device_id, visualize=False)
+            result = hros_anomaly_detection(hr_data, steps_data, device_id, visualize=True)
 
-        #     a = result.loc[result['anomaly'] == -1, ('index', 'heartrate')]
-        #     b = a[(a['heartrate']> 0)]
-        #     print(b)
-
+            anomalies = result.loc[result['anomaly'] == -1, ('index', 'heartrate')]
+            df_abnormal = anomalies[(anomalies['heartrate']> 0)]
             
-        # MQTT
-        # try:
-        #     print("mqtt")
-        # except:
-        #     print("error")
+            data_to_mqtt(result, df_abnormal, device_id, ACCESS_TOKEN)
+            
 
         # LOG
 
-# # message
-# payload="{"
-# payload+="\"Humidity\":60,"; 
-# payload+="\"Temperature\":25"; 
-# payload+="}"
 
 
 if __name__ == "__main__":
