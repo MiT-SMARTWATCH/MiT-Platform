@@ -19,7 +19,7 @@ import hrosad_offline
 
 parser = argparse.ArgumentParser(description='function for postgresql')
 parser.add_argument('--ip',default = 'localhost', metavar='', help ='ip x of database server')
-parser.add_argument('--pw',default = 'sselab0812!', metavar='',default = 'sselab0812!', help ='password for database')
+parser.add_argument('--pw',default = 'sselab0812!', metavar='', help ='password for database')
 args = parser.parse_args()
 
 global ip_address, password
