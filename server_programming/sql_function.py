@@ -32,9 +32,11 @@ password = 'sselab0812!'
 def exportToCSV(device_id, database_name, ip_address=ip_address, password=password):
     # Database to csv for analysis
     engine_thingsboard = create_engine(f'postgresql://postgres:{password}@{ip_address}:5432/{database_name}')
-
-    metrics_data = pd.read_sql_query(sql=f"SELECT * FROM ts_kv WHERE entity_id = '{device_id}'", con = engine_thingsboard)
+    #sql_sen = "SELECT * FROM ts_kv_dictionary"
+    sql_sen = f"SELECT * FROM ts_kv WHERE entity_id = '{device_id}'"
+    metrics_data = pd.read_sql_query(sql=sql_sen, con = engine_thingsboard)
     filename = str(device_id)+"_data.csv"
+    #filename = "key_dictionary.csv"
     metrics_data.to_csv(f"./data/{filename}", index = False)
 
     engine_thingsboard.dispose()
